@@ -11,14 +11,19 @@ BG = pygame.transform.scale(pygame.image.load("bg.jpeg"), (WIDTH, HEIGHT))
 
 PLAYER_WIDTH = 40
 PLAYER_HEIGHT = 60
-
 PLAYER_VEL = 5
+
+STAR_WIDTH = 30 
+STAR_HEIGHT = 40
+STAR_VEL = 3
 
 FONT = pygame.font.SysFont("comicsans", 30)
 
-STAR_WIDTH = 10
-STAR_HEIGHT = 20
-STAR_VEL = 3
+PLAYER_IMAGE = pygame.image.load("spaceship.png")
+PLAYER_IMAGE = pygame.transform.scale(PLAYER_IMAGE, (PLAYER_WIDTH, PLAYER_HEIGHT))
+
+STAR_IMAGE = pygame.image.load("asteroid.png")
+STAR_IMAGE = pygame.transform.scale(STAR_IMAGE, (STAR_WIDTH, STAR_HEIGHT))
 
 def draw(player, elapsed_time, stars):
     WIN.blit(BG, (0,0))
@@ -26,10 +31,10 @@ def draw(player, elapsed_time, stars):
     time_text = FONT.render(f"Time: {round(elapsed_time)}s", 1, "white")
     WIN.blit(time_text, (10,10))
 
-    pygame.draw.rect(WIN, "red", player)
+    WIN.blit(PLAYER_IMAGE, (player.x, player.y))
 
     for star in stars:
-        pygame.draw.rect(WIN, "white", star)
+        WIN.blit(STAR_IMAGE, (star.x, star.y))
 
     pygame.display.update()
 
@@ -37,7 +42,9 @@ def draw(player, elapsed_time, stars):
 def main():
     run = True
     
-    player = pygame.Rect(200, HEIGHT - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT)
+    player = PLAYER_IMAGE.get_rect()
+    
+    pygame.Rect(200, HEIGHT - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT)
     clock = pygame.time.Clock()
     start_time = time.time()
     elapsed_time = 0
@@ -67,10 +74,15 @@ def main():
                 break
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and player.x - PLAYER_VEL >=0:
-            player.x -= PLAYER_VEL
         if keys[pygame.K_RIGHT] and player.x + PLAYER_WIDTH + PLAYER_VEL <= WIDTH:
             player.x += PLAYER_VEL
+        if keys[pygame.K_LEFT] and player.x - PLAYER_VEL >=0:
+            player.x -= PLAYER_VEL
+        if keys[pygame.K_UP] and player.y - PLAYER_VEL >=0:
+            player.y -= PLAYER_VEL
+        if keys[pygame.K_DOWN] and player.y + PLAYER_HEIGHT + PLAYER_VEL <= HEIGHT:
+            player.y += PLAYER_VEL
+
 
         for star in stars[:]:
             star.y += STAR_VEL
